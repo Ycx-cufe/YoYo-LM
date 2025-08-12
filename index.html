@@ -48,6 +48,79 @@
         .modal-overlay {
             background-color: rgba(0, 0, 0, 0.75);
         }
+
+        /* AI 聊天窗口样式 */
+        #ai-chat-modal {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 90%;
+            max-width: 400px;
+            height: 60%;
+            max-height: 600px;
+            background-color: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        #chat-history {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .chat-message {
+            max-width: 80%;
+            padding: 0.75rem;
+            border-radius: 1rem;
+            word-break: break-word;
+        }
+        .user-message {
+            background-color: #e2e8f0;
+            align-self: flex-end;
+        }
+        .ai-message {
+            background-color: #ffedd5;
+            align-self: flex-start;
+        }
+        #chat-input-area {
+            border-top: 1px solid #e2e8f0;
+            padding: 1rem;
+        }
+
+        /* AI 浮动按钮 */
+        #ai-chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 900;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            background-color: #3B82F6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: all 0.3s ease-in-out;
+        }
+        #ai-chat-button:hover {
+            transform: scale(1.1);
+        }
+        #ai-chat-button .ai-icon {
+            font-size: 24px;
+        }
+        #ai-chat-button .ai-text {
+            font-size: 12px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -71,12 +144,20 @@
                 <a href="#culture" class="text-gray-600 hover:text-orange-600 font-semibold transition-colors duration-300">文化故事</a>
             </div>
 
-            <!-- 移动端汉堡菜单按钮 -->
-            <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
+            <!-- 用户登录状态显示和按钮 -->
+            <div id="user-controls" class="flex items-center space-x-4">
+                <button id="login-button" class="bg-orange-600 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-orange-700 transition-colors duration-300 hidden md:block">登录/注册</button>
+                <div id="user-info" class="flex items-center space-x-2 hidden">
+                    <span class="text-gray-600">欢迎, <span id="username-display" class="font-semibold"></span></span>
+                    <button id="logout-button" class="bg-gray-200 text-gray-700 font-bold py-1 px-3 rounded-full hover:bg-gray-300 transition-colors duration-300">退出</button>
+                </div>
+                <!-- 移动端汉堡菜单按钮 -->
+                <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
         </nav>
         
         <!-- 移动端下拉菜单 -->
@@ -87,6 +168,7 @@
                 <a href="#shop" class="block text-gray-600 hover:bg-gray-100 p-2 rounded-md transition-colors duration-300">线上商城</a>
                 <a href="#tourism" class="block text-gray-600 hover:bg-gray-100 p-2 rounded-md transition-colors duration-300">文旅预约</a>
                 <a href="#culture" class="block text-gray-600 hover:bg-gray-100 p-2 rounded-md transition-colors duration-300">文化故事</a>
+                <button id="mobile-login-button" class="bg-orange-600 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-orange-700 transition-colors duration-300 mt-4">登录/注册</button>
             </div>
         </div>
     </header>
@@ -254,8 +336,56 @@
         </div>
     </footer>
 
+    <!-- AI 聊天浮动按钮 -->
+    <div id="ai-chat-button" class="fixed bottom-20 right-20 z-900 cursor-pointer w-16 h-16 bg-blue-500 text-white rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-message-square"><path d="M12 8v4"></path><path d="M12 16h.01"></path><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span class="text-xs font-bold mt-1">小鹿AI</span>
+    </div>
+
     <!-- 模态框容器 -->
     <div id="modal-container" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+        <!-- 登录注册弹窗 -->
+        <div id="login-modal" class="modal-content bg-white rounded-xl shadow-2xl p-8 max-w-lg w-full transform scale-95 transition-transform duration-300 ease-out">
+            <div class="flex justify-between items-center mb-4 border-b pb-4">
+                <h3 class="text-2xl font-bold text-gray-900">登录/注册</h3>
+                <button class="modal-close-button text-gray-500 hover:text-gray-900">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <!-- 登录方式切换 -->
+            <div class="flex mb-6 text-center">
+                <button id="phone-tab" class="flex-1 p-3 font-bold border-b-2 border-orange-500 text-orange-600 transition-colors duration-300">手机号登录</button>
+                <button id="wechat-tab" class="flex-1 p-3 font-bold border-b-2 border-transparent text-gray-600 hover:text-orange-600 transition-colors duration-300">微信扫码登录</button>
+            </div>
+            
+            <!-- 手机号登录表单 -->
+            <div id="phone-login-form" class="space-y-4">
+                <p class="text-sm text-gray-500">为了保护你的账户安全，请使用手机号登录。</p>
+                <form id="login-form">
+                    <div>
+                        <label for="phone-number" class="block text-gray-700 font-medium mb-1">姓名</label>
+                        <input type="text" id="login-username" class="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-orange-500" placeholder="请输入你的姓名" required>
+                    </div>
+                    <div>
+                        <label for="verification-code" class="block text-gray-700 font-medium mb-1">手机号</label>
+                        <div class="flex space-x-2">
+                            <input type="tel" id="login-phone" class="flex-1 p-3 rounded-lg border border-gray-300 focus:outline-none focus:border-orange-500" placeholder="请输入手机号" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full mt-4 bg-orange-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-700 transition-colors duration-300">登录</button>
+                </form>
+            </div>
+
+            <!-- 微信扫码登录区 -->
+            <div id="wechat-login-area" class="hidden text-center space-y-4">
+                <p class="text-sm text-gray-500">请使用微信扫描下方二维码完成登录</p>
+                <!-- 微信二维码占位图 -->
+                <!-- TODO: 在实际项目中，这里会由后台API生成一个动态的登录二维码 -->
+                <img src="https://placehold.co/200x200/22C55E/FFFFFF?text=微信二维码" alt="微信扫码登录" class="mx-auto my-4 rounded-lg shadow-md">
+                <p class="text-sm text-gray-500">二维码将在<span id="qr-countdown" class="font-bold text-orange-600">60</span>秒后失效</p>
+            </div>
+        </div>
+
         <!-- 溯源信息弹窗 -->
         <div id="trace-modal" class="modal-content bg-white rounded-xl shadow-2xl p-8 max-w-lg w-full transform scale-95 transition-transform duration-300 ease-out">
             <div class="flex justify-between items-center mb-4 border-b pb-4">
@@ -282,7 +412,7 @@
             </div>
             <div id="cart-empty-message" class="text-center text-gray-500 hidden">购物车是空的。</div>
             <div id="cart-summary" class="mt-6 pt-4 border-t border-gray-200">
-                <p class="text-lg font-bold text-gray-900 flex justify-between">总计: <span id="cart-total">¥0.00</span></p>
+                <p class="text-lg font-bold text-gray-900 flex justify-between">总计: <span id="cart-total" class="font-normal text-orange-600">¥0.00</span></p>
                 <button class="w-full mt-4 bg-orange-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-orange-700 transition-colors duration-300">去结算</button>
             </div>
         </div>
@@ -318,14 +448,82 @@
                 <p>预约成功！我们稍后会与您联系。</p>
             </div>
         </div>
+        <!-- 购买/支付弹窗 -->
+        <div id="checkout-modal" class="modal-content bg-white rounded-xl shadow-2xl p-8 max-w-lg w-full transform scale-95 transition-transform duration-300 ease-out">
+            <div class="flex justify-between items-center mb-4 border-b pb-4">
+                <h3 class="text-2xl font-bold text-gray-900">扫码支付</h3>
+                <button class="modal-close-button text-gray-500 hover:text-gray-900">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="text-center">
+                <p class="text-xl font-bold mb-2 text-gray-900">订单总计: <span id="checkout-total" class="text-orange-600">¥0.00</span></p>
+                <p class="text-gray-600 mb-4">请使用微信或支付宝扫描下方二维码完成支付。</p>
+                <div class="flex justify-center space-x-8">
+                    <!-- 模拟微信支付二维码 -->
+                    <div class="text-center">
+                        <img src="https://placehold.co/200x200/22C55E/FFFFFF?text=微信支付" alt="微信支付二维码" class="rounded-lg shadow-md mb-2">
+                        <p class="text-gray-500">微信支付</p>
+                    </div>
+                    <!-- 模拟支付宝支付二维码 -->
+                    <div class="text-center">
+                        <img src="https://placehold.co/200x200/007AFF/FFFFFF?text=支付宝支付" alt="支付宝支付二维码" class="rounded-lg shadow-md mb-2">
+                        <p class="text-gray-500">支付宝支付</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- AI 聊天窗口 -->
+    <div id="ai-chat-modal">
+        <div class="flex justify-between items-center p-4 bg-blue-500 text-white rounded-t-xl">
+            <h3 class="text-lg font-bold">小鹿AI</h3>
+            <button id="ai-chat-close" class="hover:text-gray-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="chat-history">
+            <div class="ai-message text-sm">
+                你好！我是小鹿AI，很高兴为你服务。你可以问我关于“呦呦鹿鸣”项目、北亩村梅花鹿产品或网站操作的任何问题。
+            </div>
+        </div>
+        <div id="chat-input-area">
+            <div class="flex space-x-2">
+                <input type="text" id="chat-input" placeholder="输入你的问题..." class="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
+                <button id="chat-send-button" class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI 浮动按钮 -->
+    <div id="ai-chat-button" class="fixed bottom-20 right-20 z-900 cursor-pointer w-16 h-16 bg-blue-500 text-white rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-message-square"><path d="M12 8v4"></path><path d="M12 16h.01"></path><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span class="text-xs font-bold mt-1">小鹿AI</span>
     </div>
 
     <script>
         // JavaScript 用于实现动态功能和交互
         document.addEventListener('DOMContentLoaded', () => {
+            // ==================== 商业计划书内容（作为AI的知识库） ====================
+            const projectInfo = `
+                呦呦鹿鸣”北亩村梅花鹿产业品牌孵化项目，位于山西省晋中市昔阳县北亩村。该项目以“以鹿为媒”为发展策略，旨在通过“1+3+1模式”推动乡村振兴。
+                项目创新点包括：绿色数字赋能（以绿色发展为核心，利用数字经济推动产业发展）、案例品牌示范（借鉴陕西佛坪和云南东风韵的成功经验）、1+3+1模式（1个品牌孵化 + 3个助力路径：产业+绿色、产业+数字、产业+文旅 + 1个品牌全周期维护）。
+                项目定位：
+                - 战略定位：“三产融合驱动的绿色生态品牌孵化标杆”。
+                - 功能定位：集品牌孵化中心、创意设计、智慧营销、文旅综合体于一体。
+                - 用户定位：A端（农业合作社、科研机构）、B端（商超、旅行社）、C端（城市中高端消费群体、Z世代、亲子家庭）。
+                产品主要有：
+                1.  **鹿茸**：高价值产品，有两杠和三叉之分，两杠是上品。可一年收割两次。
+                2.  **鹿血酒**：与山西高级医药研究所合作定制配方，有专利支持，主要针对中老年人，用于保健养生、治疗风湿等。
+                3.  **鹿肉**：作为休闲食品，如鹿肉干，或高端食材。
+                4.  **文创周边**：如冰箱贴、徽章、绘本、表情包等。
+                文旅项目包括：梅花鹿园门票、亲子喂养、AR导览、研学游等。
+                溯源系统：每款产品附加二维码，可追溯到梅花鹿编号、年龄、饲养记录、采割周期、车间视频和质检报告等。
+                销售渠道：线上（电商平台、社交媒体）和线下（周边村落、旅游展厅）。
+            `;
 
             // ==================== 数据部分 ====================
-            // TODO: 在这里编辑你的产品信息，增加或减少产品卡片
             const products = [
                 {
                     id: 'product-001',
@@ -371,7 +569,6 @@
                 }
             ];
 
-            // 溯源系统模拟数据
             const traceabilityData = {
                 'QR12345': {
                     deerId: 'BH-2023-001',
@@ -379,8 +576,8 @@
                     vaccine: '已接种',
                     feedLog: '2025年5月有机秸秆饲喂',
                     cutCycle: '2025年4月首次采割',
-                    videoUrl: '#', // 链接到车间视频
-                    qualityReport: '#' // 链接到质检报告
+                    videoUrl: '#',
+                    qualityReport: '#'
                 },
                 'QR67890': {
                     deerId: 'BH-2024-055',
@@ -399,15 +596,13 @@
                 products.forEach(product => {
                     const cardHtml = `
                         <div class="product-card bg-gray-50 rounded-xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 p-6 flex flex-col items-center animate-fade-in-up">
-                            <!-- TODO: 替换为你的产品图片链接 -->
                             <img src="${product.imageUrl}" alt="${product.name}" class="rounded-xl w-full h-48 object-cover mb-4">
                             <h3 class="text-xl font-bold text-center mb-2 text-gray-900">${product.name}</h3>
-                            <!-- TODO: 替换为你的产品描述 -->
                             <p class="text-gray-600 text-center mb-4">${product.description}</p>
                             <div class="flex items-center justify-between w-full">
                                 <span class="text-2xl font-bold text-orange-600">¥${product.price.toFixed(2)}</span>
-                                <button data-product-id="${product.id}" class="add-to-cart-button bg-green-500 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-green-600 transition-colors duration-300">
-                                    加入购物车
+                                <button data-product-id="${product.id}" class="buy-now-button bg-green-500 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-green-600 transition-colors duration-300">
+                                    立即购买
                                 </button>
                             </div>
                         </div>
@@ -418,14 +613,15 @@
 
             // ==================== 模态框和交互功能 ====================
             const modalContainer = document.getElementById('modal-container');
+            const loginModal = document.getElementById('login-modal');
             const traceModal = document.getElementById('trace-modal');
-            const cartModal = document.getElementById('cart-modal');
+            const checkoutModal = document.getElementById('checkout-modal');
             const bookingModal = document.getElementById('booking-modal');
 
             const showModal = (modalElement) => {
                 modalContainer.classList.remove('hidden');
                 modalContainer.classList.add('flex');
-                modalElement.classList.add('modal-overlay');
+                document.querySelectorAll('.modal-content').forEach(m => m.style.display = 'none');
                 modalElement.style.display = 'block';
                 setTimeout(() => {
                     modalElement.classList.remove('scale-95');
@@ -434,11 +630,10 @@
             };
 
             const hideModal = () => {
-                const visibleModal = document.querySelector('.modal-content:not([style*="display: none"])');
+                const visibleModal = document.querySelector('.modal-content[style*="display: block"]');
                 if (visibleModal) {
                     visibleModal.classList.remove('scale-100');
                     visibleModal.classList.add('scale-95');
-                    visibleModal.classList.remove('modal-overlay');
                     setTimeout(() => {
                         visibleModal.style.display = 'none';
                         modalContainer.classList.remove('flex');
@@ -447,17 +642,86 @@
                 }
             };
             
-            // 关闭模态框按钮
             document.querySelectorAll('.modal-close-button').forEach(button => {
                 button.addEventListener('click', hideModal);
             });
 
-            // 点击模态框外部关闭
             modalContainer.addEventListener('click', (e) => {
                 if (e.target === modalContainer) {
                     hideModal();
                 }
             });
+
+            // ==================== 登录/注册功能 ====================
+            const loginButton = document.getElementById('login-button');
+            const mobileLoginButton = document.getElementById('mobile-login-button');
+            const userInfoDiv = document.getElementById('user-info');
+            const usernameDisplay = document.getElementById('username-display');
+            const logoutButton = document.getElementById('logout-button');
+            
+            const phoneTab = document.getElementById('phone-tab');
+            const wechatTab = document.getElementById('wechat-tab');
+            const phoneLoginForm = document.getElementById('phone-login-form');
+            const wechatLoginArea = document.getElementById('wechat-login-area');
+            
+            phoneTab.addEventListener('click', () => {
+                phoneLoginForm.classList.remove('hidden');
+                wechatLoginArea.classList.add('hidden');
+                phoneTab.classList.add('border-orange-500', 'text-orange-600');
+                wechatTab.classList.remove('border-orange-500', 'text-orange-600');
+            });
+
+            wechatTab.addEventListener('click', () => {
+                wechatLoginArea.classList.remove('hidden');
+                phoneLoginForm.classList.add('hidden');
+                wechatTab.classList.add('border-orange-500', 'text-orange-600');
+                phoneTab.classList.remove('border-orange-500', 'text-orange-600');
+            });
+
+            const handleLogin = (username) => {
+                localStorage.setItem('loggedIn', 'true');
+                localStorage.setItem('username', username);
+                checkLoginStatus();
+                hideModal();
+            };
+
+            const handleLogout = () => {
+                localStorage.removeItem('loggedIn');
+                localStorage.removeItem('username');
+                checkLoginStatus();
+            };
+
+            const checkLoginStatus = () => {
+                const loggedIn = localStorage.getItem('loggedIn');
+                const username = localStorage.getItem('username');
+                if (loggedIn) {
+                    loginButton.classList.add('hidden');
+                    mobileLoginButton.classList.add('hidden');
+                    userInfoDiv.classList.remove('hidden');
+                    usernameDisplay.textContent = username || '会员';
+                } else {
+                    loginButton.classList.remove('hidden');
+                    mobileLoginButton.classList.remove('hidden');
+                    userInfoDiv.classList.add('hidden');
+                }
+            };
+            
+            loginButton.addEventListener('click', () => showModal(loginModal));
+            mobileLoginButton.addEventListener('click', () => {
+                showModal(loginModal);
+                mobileMenu.classList.add('hidden');
+            });
+            logoutButton.addEventListener('click', handleLogout);
+
+            document.getElementById('login-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const phoneNumber = document.getElementById('login-phone').value;
+                const username = document.getElementById('login-username').value;
+                console.log(`模拟手机号登录: 用户名 ${username}, 手机号 ${phoneNumber}`);
+                handleLogin(username);
+            });
+
+            checkLoginStatus();
 
             // ==================== 溯源系统功能 ====================
             const traceButton = document.getElementById('trace-button');
@@ -486,47 +750,17 @@
                 });
             }
 
-            // ==================== 购物车功能 ====================
-            let cart = [];
-            const cartItemsContainer = document.getElementById('cart-items');
-            const cartTotalSpan = document.getElementById('cart-total');
-            const cartEmptyMessage = document.getElementById('cart-empty-message');
-
+            // ==================== 扫码下单功能 ====================
             document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('add-to-cart-button')) {
+                if (e.target.classList.contains('buy-now-button')) {
                     const productId = e.target.dataset.productId;
                     const product = products.find(p => p.id === productId);
                     if (product) {
-                        cart.push(product);
-                        // 注意：这里使用 console.log 模拟，实际应用中可以有更友好的提示
-                        console.log(`${product.name} 已加入购物车！`);
-                        updateCartDisplay();
-                        showModal(cartModal); // 自动弹出购物车
+                        document.getElementById('checkout-total').textContent = `¥${product.price.toFixed(2)}`;
+                        showModal(checkoutModal);
                     }
                 }
             });
-            
-            // 更新购物车显示
-            const updateCartDisplay = () => {
-                cartItemsContainer.innerHTML = '';
-                let total = 0;
-                if (cart.length > 0) {
-                    cartEmptyMessage.classList.add('hidden');
-                    cart.forEach(item => {
-                        total += item.price;
-                        const cartItemHtml = `
-                            <div class="flex justify-between items-center bg-gray-100 p-3 rounded-lg">
-                                <span class="font-bold">${item.name}</span>
-                                <span class="text-orange-600">¥${item.price.toFixed(2)}</span>
-                            </div>
-                        `;
-                        cartItemsContainer.innerHTML += cartItemHtml;
-                    });
-                } else {
-                    cartEmptyMessage.classList.remove('hidden');
-                }
-                cartTotalSpan.textContent = `¥${total.toFixed(2)}`;
-            };
 
             // ==================== 文旅预约功能 ====================
             const bookingButtons = document.querySelectorAll('.booking-button');
@@ -544,27 +778,23 @@
 
             bookingForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                // TODO: 在实际应用中，这里会发送数据到后端服务器
-                // 模拟提交成功
-                bookingForm.classList.add('hidden');
-                bookingSuccessMessage.classList.remove('hidden');
                 console.log('模拟提交预约信息：', {
                     name: document.getElementById('booking-name').value,
                     phone: document.getElementById('booking-phone').value,
                     date: document.getElementById('booking-date').value,
                     count: document.getElementById('booking-count').value
                 });
+                bookingForm.classList.add('hidden');
+                bookingSuccessMessage.classList.remove('hidden');
             });
 
             // ==================== 顶部导航和轮播图功能 ====================
-            // 移动端菜单切换
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
             mobileMenuButton.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
             });
 
-            // 平滑滚动
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -577,7 +807,6 @@
                 });
             });
 
-            // 文化故事轮播图
             const carousel = document.getElementById('carousel');
             const prevButton = document.getElementById('prev-button');
             const nextButton = document.getElementById('next-button');
@@ -597,6 +826,120 @@
             nextButton.addEventListener('click', () => {
                 currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
                 updateCarousel();
+            });
+            
+            // ==================== AI Chat 功能 ====================
+            const aiChatButton = document.getElementById('ai-chat-button');
+            const aiChatModal = document.getElementById('ai-chat-modal');
+            const aiChatCloseButton = document.getElementById('ai-chat-close');
+            const chatHistory = document.getElementById('chat-history');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendButton = document.getElementById('chat-send-button');
+
+            aiChatButton.addEventListener('click', () => {
+                aiChatModal.style.display = aiChatModal.style.display === 'flex' ? 'none' : 'flex';
+                if (aiChatModal.style.display === 'flex') {
+                    chatInput.focus();
+                }
+            });
+
+            aiChatCloseButton.addEventListener('click', () => {
+                aiChatModal.style.display = 'none';
+            });
+            
+            // AI 浮动按钮的显示和隐藏逻辑
+            const handleResize = () => {
+                if (window.innerWidth < 768) { // 小于 md 斷點
+                    aiChatButton.style.display = 'none';
+                } else {
+                    aiChatButton.style.display = 'flex';
+                }
+            };
+
+            window.addEventListener('resize', handleResize);
+            handleResize();
+
+            // deepseek API 配置
+            const DEEPSEEK_API_KEY = 'sk-PL1bhghAGyO0IfaQ2732CeC1Fb7e40A6A89b6f2b5dA5Cb0a';
+            const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
+            const sendMessage = async () => {
+                const userMessage = chatInput.value.trim();
+                if (userMessage === '') return;
+
+                // 显示用户消息
+                const userMessageElement = document.createElement('div');
+                userMessageElement.classList.add('chat-message', 'user-message');
+                userMessageElement.textContent = userMessage;
+                chatHistory.appendChild(userMessageElement);
+                chatInput.value = '';
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                // 显示 AI 加载中
+                const aiLoadingElement = document.createElement('div');
+                aiLoadingElement.classList.add('chat-message', 'ai-message');
+                aiLoadingElement.innerHTML = '思考中...';
+                chatHistory.appendChild(aiLoadingElement);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                try {
+                    const messages = [
+                        { role: "system", content: `你是一个名为“小鹿AI”的智能助理，负责解答用户关于“呦呦鹿鸣”商业项目、产品和网站操作的疑问。
+                         你的语言风格是友好、热情且专业的。
+                         你对以下项目信息有深入的了解：
+                         ${projectInfo}`
+                        },
+                        { role: "user", content: userMessage }
+                    ];
+
+                    const response = await fetch(DEEPSEEK_API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+                        },
+                        body: JSON.stringify({
+                            model: "deepseek-chat",
+                            messages: messages,
+                            stream: false
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    chatHistory.removeChild(aiLoadingElement);
+                    
+                    if (result.choices && result.choices.length > 0 && result.choices[0].message) {
+                        const aiResponseText = result.choices[0].message.content;
+                        const aiMessageElement = document.createElement('div');
+                        aiMessageElement.classList.add('chat-message', 'ai-message');
+                        aiMessageElement.textContent = aiResponseText;
+                        chatHistory.appendChild(aiMessageElement);
+                    } else {
+                        const errorMessage = document.createElement('div');
+                        errorMessage.classList.add('chat-message', 'ai-message');
+                        errorMessage.textContent = '抱歉，小鹿AI暂时无法回答你的问题，请稍后再试。';
+                        chatHistory.appendChild(errorMessage);
+                    }
+                    
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                } catch (error) {
+                    console.error('API Error:', error);
+                    chatHistory.removeChild(aiLoadingElement);
+                    const errorMessage = document.createElement('div');
+                    errorMessage.classList.add('chat-message', 'ai-message');
+                    errorMessage.textContent = '抱歉，网络连接失败，请稍后再试。';
+                    chatHistory.appendChild(errorMessage);
+                    chatHistory.scrollTop = chatHistory.scrollHeight;
+                }
+            };
+
+            chatSendButton.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    sendMessage();
+                }
             });
         });
     </script>
