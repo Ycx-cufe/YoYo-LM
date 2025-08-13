@@ -217,7 +217,7 @@
         <!-- 线上商城与互动 -->
         <section id="shop" class="py-16 bg-white">
             <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-gray-900">线上商城与鹿粉俱乐部</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">线上商城与鹿粉俱乐部</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- 商城核心功能卡片 -->
                     <div class="bg-orange-50 rounded-xl p-6 shadow-md hover:shadow-xl transition-shadow duration-300">
@@ -260,7 +260,7 @@
                         <div class="p-6">
                             <h3 class="text-2xl font-bold mb-2 text-gray-900">亲子喂养体验</h3>
                             <!-- TODO: 替换为详细的活动描述 -->
-                            <p class="text-gray-600 mb-4">近距离接触温顺的梅花鹿，与家人共享温馨时光1231233213211234567。</p>
+                            <p class="text-gray-600 mb-4">近距离接触温顺的梅花鹿，与家人共享温馨时光。</p>
                             <button class="booking-button inline-block bg-orange-600 text-white font-bold py-2 px-6 rounded-full hover:bg-orange-700 transition-colors duration-300">立即预约</button>
                         </div>
                     </div>
@@ -287,7 +287,10 @@
                     <div id="carousel" class="flex transition-transform duration-500 ease-in-out">
                         <!-- TODO: 替换为大寨故事、脱贫攻坚、鹿文化的图片和描述 -->
                         <div class="flex-shrink-0 w-full">
-                            <img src="https://placehold.co/1200x600/3498DB/FFFFFF?text=大寨故事" alt="大寨故事" class="w-full h-auto object-cover">
+                            <video controls autoplay loop muted class="w-full h-auto object-cover">
+                                <source src="https://raw.githubusercontent.com/Ycx-cufe/YoYo-LM/main/%E9%B9%BF%E8%8C%B8.mp4" type="video/mp4">
+                                您的浏览器不支持视频播放。
+                            </video>
                             <div class="absolute bottom-0 left-0 right-0 p-4 bg-black bg-opacity-50 text-white text-center">
                                 <h3 class="text-xl md:text-3xl font-bold">融合大寨故事，传承红色精神</h3>
                                 <p class="hidden md:block">了解北亩村与大寨的深厚历史渊源，感受艰苦奋斗的山西精神。</p>
@@ -517,7 +520,7 @@
                 {
                     id: 'product-001',
                     name: '鹿茸',
-                    description: '鹿茸的炮制过程、选品标准，了解高品质的秘诀。大家快来买呀！',
+                    description: '鹿茸的炮制过程、选品标准，了解高品质的秘诀。',
                     price: 199.00,
                     imageUrl: 'https://raw.githubusercontent.com/Ycx-cufe/YoYo-LM/main/%E9%B9%BF%E8%8C%B8.png'
                 },
@@ -526,7 +529,7 @@
                     name: '鹿血酒',
                     description: '传统酿造工艺与养生功效，搭配中式药膳的美味。',
                     price: 299.00,
-                    imageUrl: 'https://github.com/Ycx-cufe/YoYo-LM/blob/main/%E9%B9%BF%E8%A1%80%E9%85%92.png?raw=true'
+                    imageUrl: 'https://placehold.co/300x200/DB4437/FFFFFF?text=鹿血酒'
                 },
                 {
                     id: 'product-003',
@@ -824,20 +827,17 @@
             const chatInput = document.getElementById('chat-input');
             const chatSendButton = document.getElementById('chat-send-button');
             const mainContent = document.getElementById('main-content');
-
-            // AI 浮动按钮点击事件
+            
             aiChatButton.addEventListener('click', () => {
-                mainContent.classList.add('hidden');
-                aiChatPage.classList.remove('hidden');
-                aiChatPage.classList.add('flex');
+                // 修复逻辑：直接切换页面的 display 属性
+                mainContent.style.display = 'none';
+                aiChatPage.style.display = 'flex';
                 chatInput.focus();
             });
 
-            // AI 页面关闭按钮事件
             aiChatCloseButton.addEventListener('click', () => {
-                aiChatPage.classList.remove('flex');
-                aiChatPage.classList.add('hidden');
-                mainContent.classList.remove('hidden');
+                aiChatPage.style.display = 'none';
+                mainContent.style.display = 'block';
             });
             
             // AI 浮动按钮的显示和隐藏逻辑
@@ -938,5 +938,3 @@
 
 </body>
 </html>
-
-
