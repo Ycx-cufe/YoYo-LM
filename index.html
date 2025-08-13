@@ -50,17 +50,13 @@
         }
 
         /* AI 聊天窗口样式 */
-        #ai-chat-modal {
+        #ai-chat-page {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 90%;
-            max-width: 400px;
-            height: 60%;
-            max-height: 600px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             display: none;
             flex-direction: column;
             z-index: 1000;
@@ -173,7 +169,7 @@
         </div>
     </header>
 
-    <main>
+    <main id="main-content">
         <!-- 英雄部分 - 欢迎横幅 -->
         <section class="relative h-[60vh] flex items-center justify-center text-center bg-cover bg-center" style="background-image: url('https://placehold.co/1920x1080/FFDDC1/E57373?text=欢迎来到呦呦鹿鸣');">
             <!-- TODO: 替换为具有视觉冲击力的背景图片 -->
@@ -264,7 +260,7 @@
                         <div class="p-6">
                             <h3 class="text-2xl font-bold mb-2 text-gray-900">亲子喂养体验</h3>
                             <!-- TODO: 替换为详细的活动描述 -->
-                            <p class="text-gray-600 mb-4">近距离接触温顺的梅花鹿，与家人共享温馨时光。</p>
+                            <p class="text-gray-600 mb-4">近距离接触温顺的梅花鹿，与家人共享温馨时光1231233213211234567。</p>
                             <button class="booking-button inline-block bg-orange-600 text-white font-bold py-2 px-6 rounded-full hover:bg-orange-700 transition-colors duration-300">立即预约</button>
                         </div>
                     </div>
@@ -337,11 +333,32 @@
     </footer>
 
     <!-- AI 聊天浮动按钮 -->
-    <div id="ai-chat-button" class="fixed bottom-20 right-20 z-900 cursor-pointer w-16 h-16 bg-blue-500 text-white rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
+    <button id="ai-chat-button" class="fixed bottom-8 right-8 z-900 cursor-pointer w-16 h-16 bg-blue-500 text-white rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-message-square"><path d="M12 8v4"></path><path d="M12 16h.01"></path><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
         <span class="text-xs font-bold mt-1">小鹿AI</span>
-    </div>
+    </button>
 
+    <!-- AI 聊天页面 -->
+    <div id="ai-chat-page" class="fixed top-0 left-0 w-full h-full bg-white flex-col z-[1000] hidden">
+        <div class="flex justify-between items-center p-4 bg-blue-500 text-white rounded-t-xl">
+            <h3 class="text-lg font-bold">小鹿AI</h3>
+            <button id="ai-chat-close-page" class="hover:text-gray-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="chat-history" class="overflow-y-auto p-4 flex-1 flex flex-col gap-3">
+            <div class="ai-message text-sm p-3 rounded-lg max-w-xs self-start bg-orange-100">
+                你好！我是小鹿AI，很高兴为你服务。你可以问我关于“呦呦鹿鸣”项目、北亩村梅花鹿产品或网站操作的任何问题。
+            </div>
+        </div>
+        <div id="chat-input-area" class="p-4 border-t border-gray-200">
+            <div class="flex space-x-2">
+                <input type="text" id="chat-input" placeholder="输入你的问题..." class="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
+                <button id="chat-send-button" class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">发送</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- 模态框容器 -->
     <div id="modal-container" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
         <!-- 登录注册弹窗 -->
@@ -380,7 +397,6 @@
             <div id="wechat-login-area" class="hidden text-center space-y-4">
                 <p class="text-sm text-gray-500">请使用微信扫描下方二维码完成登录</p>
                 <!-- 微信二维码占位图 -->
-                <!-- TODO: 在实际项目中，这里会由后台API生成一个动态的登录二维码 -->
                 <img src="https://placehold.co/200x200/22C55E/FFFFFF?text=微信二维码" alt="微信扫码登录" class="mx-auto my-4 rounded-lg shadow-md">
                 <p class="text-sm text-gray-500">二维码将在<span id="qr-countdown" class="font-bold text-orange-600">60</span>秒后失效</p>
             </div>
@@ -474,33 +490,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- AI 聊天窗口 -->
-    <div id="ai-chat-modal">
-        <div class="flex justify-between items-center p-4 bg-blue-500 text-white rounded-t-xl">
-            <h3 class="text-lg font-bold">小鹿AI</h3>
-            <button id="ai-chat-close" class="hover:text-gray-200">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-        <div id="chat-history">
-            <div class="ai-message text-sm">
-                你好！我是小鹿AI，很高兴为你服务。你可以问我关于“呦呦鹿鸣”项目、北亩村梅花鹿产品或网站操作的任何问题。
-            </div>
-        </div>
-        <div id="chat-input-area">
-            <div class="flex space-x-2">
-                <input type="text" id="chat-input" placeholder="输入你的问题..." class="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500">
-                <button id="chat-send-button" class="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors duration-300">发送</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- AI 浮动按钮 -->
-    <div id="ai-chat-button" class="fixed bottom-20 right-20 z-900 cursor-pointer w-16 h-16 bg-blue-500 text-white rounded-full flex flex-col items-center justify-center shadow-lg transition-all duration-300 hover:scale-110">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot-message-square"><path d="M12 8v4"></path><path d="M12 16h.01"></path><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-        <span class="text-xs font-bold mt-1">小鹿AI</span>
-    </div>
 
     <script>
         // JavaScript 用于实现动态功能和交互
@@ -530,7 +519,7 @@
                     name: '鹿茸',
                     description: '鹿茸的炮制过程、选品标准，了解高品质的秘诀。',
                     price: 199.00,
-                    imageUrl: 'https://github.com/Ycx-cufe/YoYo-LM/blob/8703095b0bc6529dcab82383b52fef89a64e0521/%E9%B9%BF%E8%8C%B8.png?raw=true'
+                    imageUrl: 'https://raw.githubusercontent.com/Ycx-cufe/YoYo-LM/main/%E9%B9%BF%E8%8C%B8.png'
                 },
                 {
                     id: 'product-002',
@@ -739,7 +728,6 @@
                             <p><span class="font-bold">年龄:</span> ${info.age}</p>
                             <p><span class="font-bold">疫苗情况:</span> ${info.vaccine}</p>
                             <p><span class="font-bold">饲养记录:</span> ${info.feedLog}</p>
-                            <p><span class="font-bold">采割周期:</span> ${info.cutCycle}</p>
                             <p><a href="${info.videoUrl}" target="_blank" class="text-blue-500 hover:underline">查看车间视频</a></p>
                             <p><a href="${info.qualityReport}" target="_blank" class="text-blue-500 hover:underline">下载质检报告</a></p>
                         `;
@@ -830,34 +818,38 @@
             
             // ==================== AI Chat 功能 ====================
             const aiChatButton = document.getElementById('ai-chat-button');
-            const aiChatModal = document.getElementById('ai-chat-modal');
-            const aiChatCloseButton = document.getElementById('ai-chat-close');
+            const aiChatPage = document.getElementById('ai-chat-page');
+            const aiChatCloseButton = document.getElementById('ai-chat-close-page');
             const chatHistory = document.getElementById('chat-history');
             const chatInput = document.getElementById('chat-input');
             const chatSendButton = document.getElementById('chat-send-button');
+            const mainContent = document.getElementById('main-content');
 
+            // AI 浮动按钮点击事件
             aiChatButton.addEventListener('click', () => {
-                aiChatModal.style.display = aiChatModal.style.display === 'flex' ? 'none' : 'flex';
-                if (aiChatModal.style.display === 'flex') {
-                    chatInput.focus();
-                }
+                mainContent.classList.add('hidden');
+                aiChatPage.classList.remove('hidden');
+                aiChatPage.classList.add('flex');
+                chatInput.focus();
             });
 
+            // AI 页面关闭按钮事件
             aiChatCloseButton.addEventListener('click', () => {
-                aiChatModal.style.display = 'none';
+                aiChatPage.classList.remove('flex');
+                aiChatPage.classList.add('hidden');
+                mainContent.classList.remove('hidden');
             });
             
             // AI 浮动按钮的显示和隐藏逻辑
             const handleResize = () => {
-                if (window.innerWidth < 768) { // 小于 md 斷點
+                if (window.innerWidth < 768) {
                     aiChatButton.style.display = 'none';
                 } else {
                     aiChatButton.style.display = 'flex';
                 }
             };
-
             window.addEventListener('resize', handleResize);
-            handleResize();
+            handleResize(); // 页面加载时立即执行一次
 
             // deepseek API 配置
             const DEEPSEEK_API_KEY = 'sk-PL1bhghAGyO0IfaQ2732CeC1Fb7e40A6A89b6f2b5dA5Cb0a';
@@ -869,7 +861,7 @@
 
                 // 显示用户消息
                 const userMessageElement = document.createElement('div');
-                userMessageElement.classList.add('chat-message', 'user-message');
+                userMessageElement.classList.add('chat-message', 'user-message', 'text-gray-900', 'bg-blue-100');
                 userMessageElement.textContent = userMessage;
                 chatHistory.appendChild(userMessageElement);
                 chatInput.value = '';
@@ -877,7 +869,7 @@
 
                 // 显示 AI 加载中
                 const aiLoadingElement = document.createElement('div');
-                aiLoadingElement.classList.add('chat-message', 'ai-message');
+                aiLoadingElement.classList.add('chat-message', 'ai-message', 'bg-orange-100', 'text-gray-900');
                 aiLoadingElement.innerHTML = '思考中...';
                 chatHistory.appendChild(aiLoadingElement);
                 chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -912,12 +904,12 @@
                     if (result.choices && result.choices.length > 0 && result.choices[0].message) {
                         const aiResponseText = result.choices[0].message.content;
                         const aiMessageElement = document.createElement('div');
-                        aiMessageElement.classList.add('chat-message', 'ai-message');
+                        aiMessageElement.classList.add('chat-message', 'ai-message', 'text-gray-900', 'bg-orange-100');
                         aiMessageElement.textContent = aiResponseText;
                         chatHistory.appendChild(aiMessageElement);
                     } else {
                         const errorMessage = document.createElement('div');
-                        errorMessage.classList.add('chat-message', 'ai-message');
+                        errorMessage.classList.add('chat-message', 'ai-message', 'text-gray-900', 'bg-red-100');
                         errorMessage.textContent = '抱歉，小鹿AI暂时无法回答你的问题，请稍后再试。';
                         chatHistory.appendChild(errorMessage);
                     }
@@ -927,7 +919,7 @@
                     console.error('API Error:', error);
                     chatHistory.removeChild(aiLoadingElement);
                     const errorMessage = document.createElement('div');
-                    errorMessage.classList.add('chat-message', 'ai-message');
+                    errorMessage.classList.add('chat-message', 'ai-message', 'text-gray-900', 'bg-red-100');
                     errorMessage.textContent = '抱歉，网络连接失败，请稍后再试。';
                     chatHistory.appendChild(errorMessage);
                     chatHistory.scrollTop = chatHistory.scrollHeight;
@@ -946,5 +938,3 @@
 
 </body>
 </html>
-
-
