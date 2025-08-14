@@ -342,7 +342,7 @@
     </button>
 
     <!-- AI 聊天页面 -->
-    <div id="ai-chat-page" class="fixed top-0 left-0 w-full h-full bg-white flex-col z-[1000] hidden">
+    <div id="ai-chat-page">
         <div class="flex justify-between items-center p-4 bg-blue-500 text-white rounded-t-xl">
             <h3 class="text-lg font-bold">小鹿AI</h3>
             <button id="ai-chat-close-page" class="hover:text-gray-200">
@@ -399,7 +399,6 @@
             <!-- 微信扫码登录区 -->
             <div id="wechat-login-area" class="hidden text-center space-y-4">
                 <p class="text-sm text-gray-500">请使用微信扫描下方二维码完成登录</p>
-                <!-- 微信二维码占位图 -->
                 <img src="https://placehold.co/200x200/22C55E/FFFFFF?text=微信二维码" alt="微信扫码登录" class="mx-auto my-4 rounded-lg shadow-md">
                 <p class="text-sm text-gray-500">二维码将在<span id="qr-countdown" class="font-bold text-orange-600">60</span>秒后失效</p>
             </div>
@@ -828,13 +827,14 @@
             const chatSendButton = document.getElementById('chat-send-button');
             const mainContent = document.getElementById('main-content');
             
+            // AI 浮动按钮点击事件
             aiChatButton.addEventListener('click', () => {
-                // 修复逻辑：直接切换页面的 display 属性
                 mainContent.style.display = 'none';
                 aiChatPage.style.display = 'flex';
                 chatInput.focus();
             });
 
+            // AI 页面关闭按钮事件
             aiChatCloseButton.addEventListener('click', () => {
                 aiChatPage.style.display = 'none';
                 mainContent.style.display = 'block';
@@ -853,7 +853,7 @@
 
             // deepseek API 配置
             const DEEPSEEK_API_KEY = 'sk-PL1bhghAGyO0IfaQ2732CeC1Fb7e40A6A89b6f2b5dA5Cb0a';
-            const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+            const DEEPSEEK_API_URL = 'https://api.laozhang.ai/v1/chat/completions'; // 更新为用户提供的中转地址
 
             const sendMessage = async () => {
                 const userMessage = chatInput.value.trim();
